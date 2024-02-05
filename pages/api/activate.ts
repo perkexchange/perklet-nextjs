@@ -43,6 +43,7 @@ export default async function handler(
             expiresAt: session.endsAt,
             valid: now < expires,
           });
+          return;
         } else {
           res.status(200).json({
             text: "Ticket is activated.",
@@ -50,12 +51,15 @@ export default async function handler(
             expiresAt: session.endsAt,
             valid: now < expires,
           });
+          return;
         }
       } else {
         res.status(404).json({ message: "No such ticket." });
+        return;
       }
     }
     res.status(400).json({ message: "Invalid ticket." });
+    return;
   } else {
     // Handle non-POST requests
     res.setHeader("Allow", ["POST"]);
