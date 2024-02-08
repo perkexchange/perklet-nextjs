@@ -22,6 +22,13 @@ export async function getTickets(orderId: string) {
   `;
 }
 
+export async function createTicketFromInvoice(invoiceId: string) {
+  const ticketId = generateRandomString(32);
+  return await sql<Ticket[]>`
+    INSERT INTO tickets (ticket_id, created_at, invoice_id) VALUES (${ticketId}, ${Date()}, ${invoiceId})
+    RETURNING id, invoice_id, ticket_id, paid_at, created_at, activated_at
+  `;
+}
 export async function createTicket() {
   const ticketId = generateRandomString(32);
   return await sql<Ticket[]>`
@@ -44,13 +51,9 @@ export async function activateTicket(ticketId: string) {
   `;
 }
 
-export async function markTicketPaid(
-  invoiceId: string,
-  orderId: string,
-  paidAt: Date
-) {
+export async function markTicketPaid(invoiceId: string, paidAt: Date) {
   return await sql<Ticket[]>`
-    UPDATE tickets SET paid_at=${paidAt} WHERE ticket_id=${orderId} and invoice_id=${invoiceId}
+    UPDATE tickets SET paid_at=${paidAt} WHERE invoice_id=${invoiceId}
     RETURNING id, invoice_id, ticket_id, paid_at, created_at, activated_at
   `;
 }
