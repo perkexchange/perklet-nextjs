@@ -9,7 +9,9 @@ export default async function handler(
   if (req.method === "POST") {
     const session = await getIronSession<SessionData>(req, res, SessionOptions);
     const expiredDate = new Date(session.endsAt);
+
     const now = new Date();
+
     if (now < expiredDate) {
       res.status(200).json({
         text: "Hello World",

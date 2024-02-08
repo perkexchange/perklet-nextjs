@@ -22,18 +22,20 @@ export default async function handler(
           res.status(403).json({ message: "Ticket is unpaid." });
           return;
         }
-        let expires = new Date();
         let activatedAt = new Date();
+
         if (existingTicket.activated_at) {
           activatedAt = new Date(existingTicket.activated_at);
         } else {
           activateTicket(ticket);
         }
+        let expires = new Date(activatedAt);
+        expires.setMinutes(activatedAt.getMinutes() + 30); // Session limit
+
         session.ticket = existingTicket.ticket_id;
         session.activatedAt = activatedAt.toISOString();
-
-        expires.setMinutes(activatedAt.getMinutes() + 30); // Session limit
         session.endsAt = expires.toISOString();
+
         await session.save();
 
         if (now > expires) {
@@ -46,7 +48,7 @@ export default async function handler(
           return;
         } else {
           res.status(200).json({
-            text: "Ticket is activated.",
+            text: "Ticket is active",
             ticket: session.ticket,
             expiresAt: session.endsAt,
             valid: now < expires,

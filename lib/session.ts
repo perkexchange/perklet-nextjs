@@ -1,10 +1,10 @@
 export const SessionOptions = {
-  password: "your_password_hereAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", // Replace with a strong password
-  cookieName: "session",
+  password: process.env.PERKLET_SESSION_PASSWORD, // Replace with a strong password
+  cookieName: process.env.PERKLET_SESSION_COOKIE_NAME || "perklet-session",
   cookieOptions: {
-    secure: false, // Make sure to use HTTPS
-    httpOnly: true,
-    sameSite: "strict",
+    secure: process.env.PERKLET_SESSION_COOKIE_SECURE, // Make sure to use HTTPS
+    httpOnly: process.env.PERKLET_SESSION_COOKIE_HTTPONLY,
+    sameSite: process.env.PERKLET_SESSION_COOKIE_SAMESITE,
   },
 };
 
